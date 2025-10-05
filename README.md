@@ -21,7 +21,7 @@
 
 🎉 Доступна стабильная версия приложения — **v1.0 “2hack”**  
 
-📦 **Скачать APK:** [2hack.apk](https://github.com/MISIS-sisiM/2gis-quickaccess-widget/releases/download/v1.0/2hack.apk)  
+📦 **Скачать APK:** [2hack.apk](https://github.com/Ananasonfire/2hack/releases/tag/v1.0)  
 💾 **Размер:** 20.8 МБ  
 🔐 **SHA‑256:** `26687c3af2908a2fe7af7e30a2f54fb99e936ff4eec675696615041798441eff`  
 📱 **Совместимость:** Android 12 – 14  
