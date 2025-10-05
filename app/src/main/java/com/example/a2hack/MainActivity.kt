@@ -1,5 +1,6 @@
 package ru.gishackathon.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
@@ -59,8 +60,15 @@ fun WidgetTheme(content: @Composable () -> Unit) {
 
 /* ----------------------------- ДАННЫЕ --------------------------------------- */
 
-data class Stop(val title: String, val subtitle: String? = null)
-data class Action(val title: String, val icon: ImageVector, val tint: Color)
+data class Stop(val title: String, val subtitle: String? = null, val query: String)
+
+/** добавил поле query — что искать/открывать в 2ГИС */
+data class Action(
+    val title: String,
+    val icon: ImageVector,
+    val tint: Color,
+    val query: String
+)
 
 /* ----------- пресеты стартового размера для запроса пина -------------------- */
 
@@ -87,6 +95,7 @@ fun SectionHeader(text: String, modifier: Modifier = Modifier) {
 fun PillCard(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(18.dp),
+    onClick: () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
@@ -96,8 +105,9 @@ fun PillCard(
             .background(CardAlt)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = LocalIndication.current
-            ) {}
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
             .padding(horizontal = 12.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         content = content
@@ -109,7 +119,8 @@ fun SquareTile(
     title: String,
     icon: ImageVector,
     tint: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -117,8 +128,9 @@ fun SquareTile(
             .background(Card)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = LocalIndication.current
-            ) {}
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
             .padding(vertical = 14.dp)
             .heightIn(min = 84.dp)
             .fillMaxWidth(),
@@ -138,32 +150,6 @@ fun SquareTile(
     }
 }
 
-/* ------------------------------ SIZE PICKER --------------------------------- */
-
-@Composable
-private fun SizePicker(
-    selected: WidgetSize,
-    onSelect: (WidgetSize) -> Unit,
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .background(Card)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        WidgetSize.values().forEach { size ->
-            FilterChip(
-                selected = size == selected,
-                onClick = { onSelect(size) },
-                label = { Text(if (size == WidgetSize.Small) "Малый" else if (size == WidgetSize.Medium) "Средний" else "Большой") }
-            )
-        }
-    }
-}
-
 /* ------------------------------- ЭКРАН -------------------------------------- */
 
 @Composable
@@ -174,28 +160,41 @@ fun TransportWidgetScreen(
     selectedSize: WidgetSize,
     onChangeSize: (WidgetSize) -> Unit,
     onRequestPin: () -> Unit,
+    onOpenQuery: (String) -> Unit,             // <— добавил коллбек открытия 2ГИС
 ) {
     Surface(Modifier.fillMaxSize(), color = Bg) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().background(Bg),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Bg),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item { Spacer(Modifier.height(8.dp)) }
+
+            /* Ваши остановки (кликабельные) */
             item { SectionHeader("Ваши остановки") }
             items(stops) { stop ->
-                PillCard(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                    Icon(Icons.Outlined.DirectionsBus, null, tint = Blue, modifier = Modifier.size(22.dp))
+                PillCard(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                    onClick = { onOpenQuery(stop.query) }
+                ) {
+                    Icon(
+                        Icons.Outlined.DirectionsBus, null,
+                        tint = Blue, modifier = Modifier.size(22.dp)
+                    )
                     Spacer(Modifier.width(10.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(stop.title, color = TextPrimary, fontSize = 16.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(stop.title, color = TextPrimary, fontSize = 16.sp,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (!stop.subtitle.isNullOrBlank()) {
-                            Text(stop.subtitle!!, color = TextSecondary, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(stop.subtitle!!, color = TextSecondary, fontSize = 13.sp,
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }
             }
 
-            // === БЛОК ВЫБОРА РАЗМЕРА И КНОПКА (ЧУТЬ ВЫШЕ "Заказать такси") ===
+            /* Размер + кнопка пина */
             item {
                 Column(
                     Modifier
@@ -207,7 +206,31 @@ fun TransportWidgetScreen(
                 ) {
                     Text("Размер виджета", color = TextPrimary, fontWeight = FontWeight.Medium)
                     Spacer(Modifier.height(8.dp))
-                    SizePicker(selected = selectedSize, onSelect = onChangeSize)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(Card)
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        WidgetSize.values().forEach { size ->
+                            FilterChip(
+                                selected = size == selectedSize,
+                                onClick = { onChangeSize(size) },
+                                label = {
+                                    Text(
+                                        when (size) {
+                                            WidgetSize.Small -> "Малый"
+                                            WidgetSize.Medium -> "Средний"
+                                            WidgetSize.Large -> "Большой"
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    }
                     Spacer(Modifier.height(10.dp))
                     Button(onClick = onRequestPin, modifier = Modifier.fillMaxWidth()) {
                         Text("Добавить виджет на рабочий стол")
@@ -215,26 +238,44 @@ fun TransportWidgetScreen(
                 }
             }
 
-            item { SectionHeader("Заказать такси", modifier = Modifier.padding(top = 6.dp)) }
+            /* Путь */
+            item { SectionHeader("Путь", modifier = Modifier.padding(top = 6.dp)) }
             item {
                 Row(
-                    Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     actionsTaxi.take(2).forEach { act ->
-                        SquareTile(act.title, act.icon, act.tint, Modifier.weight(1f))
+                        SquareTile(
+                            title = act.title,
+                            icon = act.icon,
+                            tint = act.tint,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onOpenQuery(act.query) }
+                        )
                     }
                 }
             }
 
+            /* Построить маршрут */
             item { SectionHeader("Построить маршрут", modifier = Modifier.padding(top = 6.dp)) }
             items(actionsRoute.chunked(2)) { row ->
                 Row(
-                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     row.forEach { act ->
-                        SquareTile(act.title, act.icon, act.tint, Modifier.weight(1f))
+                        SquareTile(
+                            title = act.title,
+                            icon = act.icon,
+                            tint = act.tint,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onOpenQuery(act.query) }
+                        )
                     }
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
@@ -255,8 +296,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Убираем "белую" системную полоску, отступы — через systemBarsPadding()
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
@@ -264,40 +303,43 @@ class MainActivity : ComponentActivity() {
                 var size by remember { mutableStateOf(WidgetSize.Medium) }
 
                 Box(
-                    Modifier.fillMaxSize().background(Bg).systemBarsPadding()
+                    Modifier
+                        .fillMaxSize()
+                        .background(Bg)
+                        .systemBarsPadding()
                 ) {
                     TransportWidgetScreen(
                         stops = listOf(
-                            Stop("Метро Октябрьская"),
-                            Stop("пл. Гагарина · 1D")
+                            Stop("Метро Октябрьская", query = "Метро Октябрьская"),
+                            Stop("пл. Гагарина · 1D",  query = "площадь Гагарина 1Д")
                         ),
                         actionsTaxi = listOf(
-                            Action("Дом", Icons.Outlined.Home, Color(0xFFFFC107)),
-                            Action("Работа", Icons.Outlined.WorkOutline, Color(0xFF8BC34A))
+                            Action("Дом", Icons.Outlined.Home, Color(0xFFFFC107), query = "дом"),
+                            Action("Работа", Icons.Outlined.WorkOutline, Color(0xFF8BC34A), query = "работа")
                         ),
                         actionsRoute = listOf(
-                            Action("Медицина", Icons.Outlined.MedicalServices, Color(0xFFE53935)),
-                            Action("Автосервис", Icons.Outlined.Build, Color(0xFF64B5F6)),
-                            Action("Продукты", Icons.Outlined.LocalGroceryStore, Color(0xFF66BB6A)),
-                            Action("Заправка", Icons.Outlined.LocalGasStation, Color(0xFFFFB74D)),
-                            Action("Досуг", Icons.Outlined.LocalActivity, Color(0xFFFFA726)),
-                            Action("Аптека", Icons.Outlined.LocalPharmacy, Color(0xFF66BB6A))
+                            Action("Медицина", Icons.Outlined.MedicalServices, Color(0xFFE53935), query = "медицина"),
+                            Action("Автосервис", Icons.Outlined.Build, Color(0xFF64B5F6), query = "автосервис"),
+                            Action("Продукты", Icons.Outlined.LocalGroceryStore, Color(0xFF66BB6A), query = "продукты"),
+                            Action("Заправка", Icons.Outlined.LocalGasStation, Color(0xFFFFB74D), query = "заправка"),
+                            Action("Досуг", Icons.Outlined.LocalActivity, Color(0xFFFFA726), query = "досуг"),
+                            Action("Аптека", Icons.Outlined.LocalPharmacy, Color(0xFF66BB6A), query = "аптека")
                         ),
                         selectedSize = size,
                         onChangeSize = { size = it },
-                        onRequestPin = { requestPinWidget(size) }
+                        onRequestPin = { requestPinWidget(size) },
+                        onOpenQuery = { q -> openIn2GisOrPrompt(q) }   // <— открываем 2ГИС
                     )
                 }
             }
         }
 
-        // обработать клик с виджета, если активити запущена из него
         handleWidgetIntent(intent)
     }
 
-    override fun onNewIntent(intent: Intent) {   // <-- НЕ nullable
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleWidgetIntent(intent)               // сюда можно передать ненулевой
+        handleWidgetIntent(intent)
     }
 
     private fun handleWidgetIntent(intent: Intent?) {
@@ -306,6 +348,8 @@ class MainActivity : ComponentActivity() {
             openIn2GisOrPrompt(q)
         }
     }
+
+    /* ---------- ОТКРЫТИЕ 2ГИС ИЛИ ПРЕДЛОЖЕНИЕ УСТАНОВИТЬ ---------- */
 
     private fun openIn2GisOrPrompt(query: String) {
         val isInstalled = try {
@@ -320,37 +364,28 @@ class MainActivity : ComponentActivity() {
             startActivity(i)
         } else {
             Toast.makeText(this, "Установите 2ГИС", Toast.LENGTH_SHORT).show()
-            // Можно дополнительно открыть маркет:
-            // startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$TWO_GIS_PACKAGE")))
         }
     }
 
-    // --- запрос пина с передачей стартового размера ---
-    private fun requestPinWidget(size: WidgetSize) {
+    /* ---------- ПИН ВИДЖЕТА (как было) ---------- */
+
+    private fun requestPinWidget(@Suppress("UNUSED_PARAMETER") size: WidgetSize) {
         val mgr = getSystemService(AppWidgetManager::class.java)
         val provider = ComponentName(this, TransportWidgetProvider::class.java)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            Toast.makeText(this, "Добавьте виджет вручную (Android < 8.0)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Android < 8.0 — добавьте виджет вручную", Toast.LENGTH_LONG).show()
             return
         }
         if (!mgr.isRequestPinAppWidgetSupported) {
-            Toast.makeText(this, "Лаунчер не поддерживает пин виджета", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Лаунчер не поддерживает закрепление. Добавьте через меню виджетов.", Toast.LENGTH_LONG).show()
             return
         }
 
-        val extras = Bundle().apply {
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,  size.minWdp.dpToPx())
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, size.minHdp.dpToPx())
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,  size.maxWdp.dpToPx())
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, size.maxHdp.dpToPx())
+        val accepted = mgr.requestPinAppWidget(provider, null, null)
+        if (!accepted) {
+            Toast.makeText(this, "Откройте меню виджетов и добавьте вручную", Toast.LENGTH_LONG).show()
         }
-        mgr.requestPinAppWidget(provider, extras, null)
-    }
-
-    private fun Int.dpToPx(): Int {
-        val d = resources.displayMetrics.density
-        return (this * d).toInt()
     }
 }
 
@@ -362,22 +397,26 @@ fun PreviewTransportWidget() {
     WidgetTheme {
         var size by remember { mutableStateOf(WidgetSize.Medium) }
         TransportWidgetScreen(
-            stops = listOf(Stop("Метро Октябрьская"), Stop("пл. Гагарина · 1D")),
+            stops = listOf(
+                Stop("Метро Октябрьская", query = "Метро Октябрьская"),
+                Stop("пл. Гагарина · 1D",  query = "площадь Гагарина 1Д")
+            ),
             actionsTaxi = listOf(
-                Action("Дом", Icons.Outlined.Home, Color(0xFFFFC107)),
-                Action("Работа", Icons.Outlined.WorkOutline, Color(0xFF8BC34A))
+                Action("Дом", Icons.Outlined.Home, Color(0xFFFFC107), "дом"),
+                Action("Работа", Icons.Outlined.WorkOutline, Color(0xFF8BC34A), "работа")
             ),
             actionsRoute = listOf(
-                Action("Медицина", Icons.Outlined.MedicalServices, Color(0xFFE53935)),
-                Action("Автосервис", Icons.Outlined.Build, Color(0xFF64B5F6)),
-                Action("Продукты", Icons.Outlined.LocalGroceryStore, Color(0xFF66BB6A)),
-                Action("Заправка", Icons.Outlined.LocalGasStation, Color(0xFFFFB74D)),
-                Action("Досуг", Icons.Outlined.LocalActivity, Color(0xFFFFA726)),
-                Action("Аптека", Icons.Outlined.LocalPharmacy, Color(0xFF66BB6A))
+                Action("Медицина", Icons.Outlined.MedicalServices, Color(0xFFE53935), "медицина"),
+                Action("Автосервис", Icons.Outlined.Build, Color(0xFF64B5F6), "автосервис"),
+                Action("Продукты", Icons.Outlined.LocalGroceryStore, Color(0xFF66BB6A), "продукты"),
+                Action("Заправка", Icons.Outlined.LocalGasStation, Color(0xFFFFB74D), "заправка"),
+                Action("Досуг", Icons.Outlined.LocalActivity, Color(0xFFFFA726), "досуг"),
+                Action("Аптека", Icons.Outlined.LocalPharmacy, Color(0xFF66BB6A), "аптека")
             ),
             selectedSize = size,
             onChangeSize = { size = it },
-            onRequestPin = {}
+            onRequestPin = {},
+            onOpenQuery = {}
         )
     }
 }
