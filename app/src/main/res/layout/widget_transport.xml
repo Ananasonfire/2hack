@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#101114"
+    android:padding="12dp">
+
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ваши остановки"
+        android:textColor="#ECEFF4"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Остановки -->
+    <TextView
+        android:id="@+id/widget_stop1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🚌 Метро Октябрьская"
+        android:textColor="#B3B8C3"
+        android:textSize="14sp"
+        android:paddingTop="6dp" />
+
+    <TextView
+        android:id="@+id/widget_stop2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🚌 пл. Гагарина · 1D"
+        android:textColor="#B3B8C3"
+        android:textSize="14sp"
+        android:paddingTop="2dp" />
+
+    <!-- Кнопка открыть приложение -->
+    <Button
+        android:id="@+id/widget_open_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Открыть приложение" />
+
+    <!-- Заказать такси -->
+    <TextView
+        android:id="@+id/label_taxi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:text="Путь"
+        android:textColor="#ECEFF4"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="6dp">
+
+        <TextView
+            android:id="@+id/tile_home"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Дом 🏠"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+
+        <TextView
+            android:id="@+id/tile_work"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="Работа 💼"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+    </LinearLayout>
+
+    <!-- Построить маршрут -->
+    <TextView
+        android:id="@+id/label_route"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:text="Построить маршрут"
+        android:textColor="#ECEFF4"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Ряд 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="6dp">
+
+        <TextView
+            android:id="@+id/tile_medical"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Медицина 🏥"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+
+        <TextView
+            android:id="@+id/tile_service"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="Автосервис 🔧"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+    </LinearLayout>
+
+    <!-- Ряд 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/tile_grocery"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Продукты 🛒"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+
+        <TextView
+            android:id="@+id/tile_gas"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="Заправка ⛽"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+    </LinearLayout>
+
+    <!-- Ряд 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/tile_leisure"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Досуг 🎭"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+
+        <TextView
+            android:id="@+id/tile_pharmacy"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="Аптека 💊"
+            android:textColor="#ECEFF4"
+            android:background="#1B1D22" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.Widget" parent="Theme.Material3.DayNight">
+        <!-- эти атрибуты появятся после подключения appcompat -->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <!-- необязательно, но красиво -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>
