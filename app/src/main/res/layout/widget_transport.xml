@@ -18,23 +18,49 @@
         android:textSize="16sp" />
 
     <!-- Остановки -->
-    <TextView
-        android:id="@+id/widget_stop1"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🚌 Метро Октябрьская"
-        android:textColor="#B3B8C3"
-        android:textSize="14sp"
-        android:paddingTop="6dp" />
+        android:orientation="horizontal"
+        android:paddingTop="6dp">
 
-    <TextView
-        android:id="@+id/widget_stop2"
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/bus"
+            android:contentDescription="bus" />
+
+        <TextView
+            android:id="@+id/widget_stop1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Метро Октябрьская"
+            android:textColor="#B3B8C3"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🚌 пл. Гагарина · 1D"
-        android:textColor="#B3B8C3"
-        android:textSize="14sp"
-        android:paddingTop="2dp" />
+        android:orientation="horizontal"
+        android:paddingTop="2dp">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/bus"
+            android:contentDescription="bus" />
+
+        <TextView
+            android:id="@+id/widget_stop2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="пл. Гагарина · 1D"
+            android:textColor="#B3B8C3"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <!-- Кнопка открыть приложение -->
     <Button
@@ -44,7 +70,7 @@
         android:layout_marginTop="10dp"
         android:text="Открыть приложение" />
 
-    <!-- Заказать такси -->
+    <!-- Путь -->
     <TextView
         android:id="@+id/label_taxi"
         android:layout_width="wrap_content"
@@ -55,6 +81,7 @@
         android:textStyle="bold"
         android:textSize="16sp" />
 
+    <!-- Дом / Работа -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,26 +89,52 @@
         android:weightSum="2"
         android:paddingTop="6dp">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/tile_home"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Дом 🏠"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
 
-        <TextView
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/home"
+                android:contentDescription="home" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Дом"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/tile_work"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:gravity="center"
-            android:text="Работа 💼"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/work"
+                android:contentDescription="work" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Работа"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Построить маршрут -->
@@ -95,7 +148,7 @@
         android:textStyle="bold"
         android:textSize="16sp" />
 
-    <!-- Ряд 1 -->
+    <!-- Медицина / Автосервис -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,29 +156,55 @@
         android:weightSum="2"
         android:paddingTop="6dp">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/tile_medical"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Медицина 🏥"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
 
-        <TextView
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/doctor"
+                android:contentDescription="health" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Медицина"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/tile_service"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:gravity="center"
-            android:text="Автосервис 🔧"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/engine"
+                android:contentDescription="engine" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Автосервис"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Ряд 2 -->
+    <!-- Продукты / Заправка -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -133,29 +212,55 @@
         android:weightSum="2"
         android:paddingTop="8dp">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/tile_grocery"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Продукты 🛒"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
 
-        <TextView
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/cart"
+                android:contentDescription="grocery" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Продукты"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/tile_gas"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:gravity="center"
-            android:text="Заправка ⛽"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/oil"
+                android:contentDescription="gas" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Заправка"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Ряд 3 -->
+    <!-- Досуг / Аптека -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,26 +268,52 @@
         android:weightSum="2"
         android:paddingTop="8dp">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/tile_leisure"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Досуг 🎭"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
 
-        <TextView
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/happy"
+                android:contentDescription="leisure" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Досуг"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/tile_pharmacy"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:gravity="center"
-            android:text="Аптека 💊"
-            android:textColor="#ECEFF4"
-            android:background="#1B1D22" />
+            android:background="#1B1D22"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/health"
+                android:contentDescription="pharmacy" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Аптека"
+                android:textColor="#ECEFF4" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
